@@ -63,7 +63,8 @@ def init_sense_hat():
     logger.info("Initializing Raspberry Pi SenseHat...")
     sense = SenseHat()
     sense.clear()
-    sense.set_rotation(180)
+    sense.low_light = False
+    sense.set_rotation(0)
     sense.set_pixels(get_pi_logo())
     return sense
 
@@ -75,7 +76,7 @@ def convert_fahrenheit(temp):
 #account for internal thermal warning of the Raspberry Pi board
 def get_calibrated_temp(sense):
     tempf = convert_fahrenheit(sense.get_temperature())
-    tempcf = tempf - 38.8   #handle the thermal tempature increase from CPU heat ~ rough estimate     
+    tempcf = tempf - 0.0   #purchased a new case to avoid CPU thermal heat     
     return tempcf
 
 def get_pi_logo():
@@ -100,6 +101,18 @@ def get_checkmark_logo():
     G, W, G, W, G, G, G, G, 
     O, G, W, G, G, G, G, O, 
     O, O, G, G, G, G, O, O, 
+    ]
+
+def get_xmark_logo():
+    return [
+    O, O, R, R, R, R, O, O, 
+    O, W, R, R, R, R, W, O, 
+    R, R, W, R, R, W, R, R, 
+    R, R, R, W, W, R, R, R, 
+    R, R, R, W, W, R, R, R,  
+    R, R, W, R, R, W, R, R, 
+    O, W, R, R, R, R, W, O, 
+    O, O, R, R, R, R, O, O,
     ] 
     
 def main():    
@@ -127,6 +140,8 @@ def main():
                     t, h = [0]*15, [0]*15
                     if(result == True):
                         sense.set_pixels(get_checkmark_logo())
+                    else:
+                        sense.set_pixels(get_xmark_logo())
                 time.sleep(2)
                 
     except KeyboardInterrupt: 
